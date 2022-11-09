@@ -22,11 +22,6 @@ public class tileManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // height = 2x size
-        // width = 3X size
-        // height/2 or width/3
-        // 16*9
-
         m_MainCamera = Camera.main;
         float screenRatio = (float)Screen.width / (float)Screen.height;
         float targetRatio = columns / rows;
@@ -39,7 +34,6 @@ public class tileManager : MonoBehaviour
             float diff = targetRatio / screenRatio;
             m_MainCamera.orthographicSize = rows / 2*diff;
         }
-        //m_MainCamera.orthographicSize = Math.Max(rows/2, columns/3);
         generateGrid();
     }
     void generateGrid()
@@ -60,7 +54,7 @@ public class tileManager : MonoBehaviour
                 x = j * tileSize;
                 y = i * -tileSize;
                 tileArray[i, j].transform.position = new Vector2(x, y);
-                
+                tileArray[i, j].GetComponent<addGasOnClick>().setXYManager(i, j, this);
             }
         }
         Destroy(template);
@@ -134,5 +128,11 @@ public class tileManager : MonoBehaviour
     {
         updateGas();
         displayGas();
+    }
+    public void incrementGasOnClick(int i, int j)
+    {
+        densityMap1[i, j] += 0.3f;
+        if (densityMap1[i, j] > 3f)
+            densityMap1[i, j] = 3f;
     }
 }

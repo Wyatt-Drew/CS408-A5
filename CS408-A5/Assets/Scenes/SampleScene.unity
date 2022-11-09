@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 300333741}
   - component: {fileID: 300333740}
   m_Layer: 0
-  m_Name: Logic Unit
+  m_Name: LogicUnit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rows: 10
-  columns: 10
+  columns: 100
   tileSize: 1
 --- !u!4 &300333741
 Transform:
