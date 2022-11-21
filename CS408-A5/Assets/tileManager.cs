@@ -38,8 +38,11 @@ public class tileManager : MonoBehaviour
         densityInput.text = clickDensity.ToString();
         speedInput.text = clickSpeed.ToString();
 
+        Application.targetFrameRate = 60;
         m_MainCamera = Camera.main;
-        float screenRatio = (float)Screen.width / (float)Screen.height;
+        //Correct formula for centering without sidebars
+        //float screenRatio = (float)Screen.width / (float)Screen.height; 
+        float screenRatio = 1f;
         float targetRatio = columns / rows;
         if (screenRatio >= targetRatio)
         {
@@ -94,6 +97,7 @@ public class tileManager : MonoBehaviour
                 {
                     velocityMap1[i, j] = randomVector(-3, 3f);
                     densityMap1[i, j] = randomFloat(0, 100);
+                    //Create both so it works regardless of frame
                     velocityMap2[i, j] = new Vector2(velocityMap1[i, j].x, velocityMap1[i, j].y);
                     densityMap2[i, j] = densityMap1[i, j];
                 }
@@ -371,12 +375,14 @@ public class tileManager : MonoBehaviour
     //New game
     public void newGame()
     {
-        resetMap(densityMap1, velocityMap1);
-        resetMap(densityMap2, velocityMap2);
+        //resetMap(densityMap1, velocityMap1);
+        //resetMap(densityMap2, velocityMap2);
         clickDensity = 1000f;
         clickSpeed = 10f;
         generateGas();
-}
+        speedInput.text = clickSpeed.ToString();
+        densityInput.text = clickDensity.ToString();
+    }
     //Pause
     public void pause()
     {
