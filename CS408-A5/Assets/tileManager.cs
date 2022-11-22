@@ -23,7 +23,7 @@ public class tileManager : MonoBehaviour
 
     Camera m_MainCamera;
 
-    //Creative feature
+    //Creative feature (add gas on click)
     public float clickDensity = 1000f;
     public float clickSpeed = 10f;
     private float originalClickDensity;
@@ -33,12 +33,12 @@ public class tileManager : MonoBehaviour
     private bool isPaused = false;
     [SerializeField]
     private TextMeshProUGUI pauseTxt;
-    //Creative feature
+    //Creative feature (Change color)
     const int RED = 1;
     const int TEAL = 2;
     const int PURPLE = 3;
     private int gasColor = RED;
-    //Creative feature
+    //Creative feature (Credits)
     private bool isCredits = false;
     public GameObject panel;
     void Start()
@@ -110,6 +110,7 @@ public class tileManager : MonoBehaviour
                     velocityMap1[i, j] = randomVector(-3, 3f);
                     densityMap1[i, j] = randomFloat(0, 100);
                     //Create both so it works regardless of frame
+                    //This only gets called once per simulation so its a small price
                     velocityMap2[i, j] = new Vector2(velocityMap1[i, j].x, velocityMap1[i, j].y);
                     densityMap2[i, j] = densityMap1[i, j];
                 }
@@ -131,21 +132,21 @@ public class tileManager : MonoBehaviour
     {
         return UnityEngine.Random.Range(minValue, maxValue);
     }
-    Color generateColorRed(float density)
+    Color generateColorRed(float density) //Creative feature (Color)
     {
         float R = density;
         float G = density * density * 0.05f;
         float B = density * density * density * 0.0001f;
         return new Color(R, G, B, 1f);
     }
-    Color generateColorTeal(float density)
+    Color generateColorTeal(float density)//Creative feature (Color)
     {
         float G = density;
         float B = density * density * 0.05f;
         float R = density * density * density * 0.0001f;
         return new Color(R, G, B, 1f);
     }
-    Color generateColorPurple(float density)
+    Color generateColorPurple(float density)//Creative feature (Color)
     {
         float B = density;
         float R = density * density * 0.05f;
@@ -168,7 +169,6 @@ public class tileManager : MonoBehaviour
         int R = 0; //Right
         int L = 0; //Left
         int B = 0; //Bottom      
-        //Debug.Log("L" + L + "R" + R + "B" + B + "T" + T);
         resetMap(nextDensityMap, nextVelocityMap);
 
         for (int i = 0; i < columns; i++)
@@ -197,11 +197,8 @@ public class tileManager : MonoBehaviour
                 }
                 else //right wrap around
                 {
-                    
                     L = (i + xOffset) % columns;
                     R = (i + xOffset + 1) % columns;
-
-
                 }
                 if (yOffset < 0 || yFraction < 0) // If Y is negative use top wrap around
                 {
@@ -216,7 +213,6 @@ public class tileManager : MonoBehaviour
                     {
                         B = rows + B;
                     }
-
                 }
                 else //Bottom wrap around
                 {
@@ -224,7 +220,6 @@ public class tileManager : MonoBehaviour
                     B = (j + yOffset + 1) % rows;
                     
                 }
-                
                 xFraction = Mathf.Abs(xFraction);
                 yFraction = Mathf.Abs(yFraction);
                 //calculate masses being added
@@ -282,7 +277,7 @@ public class tileManager : MonoBehaviour
     //Purpose: Update gas colors to current density
     void displayGas(float[,] thisDensityMap)
     {
-        switch(gasColor)
+        switch(gasColor) //Creative feature (Color)
         {
             case RED:
                 for (int i = 0; i < columns; i++)
@@ -316,6 +311,7 @@ public class tileManager : MonoBehaviour
     }
     //Debug function
     //Purpose: Verify total mass does not change (within rounding error of Unity with floats).
+    //Not currently used.
     void sumMass()
     {
         float sum = 0f;
@@ -327,19 +323,6 @@ public class tileManager : MonoBehaviour
             }
         }
         Debug.Log("Total Density: " + sum);
-    }
-    //Debug Function
-    //Purpose: Display current and next values for velocity and density.
-    void displayGrids(float[,] thisDensityMap, float[,] nextDensityMap, Vector2[,] thisVelocityMap, Vector2[,] nextVelocityMap)
-    {
-        for (int i = 0; i < columns; i++)
-        {
-            for (int j = 0; j < rows; j++)
-            {
-                Debug.Log("This: V:X" + thisVelocityMap[i, j].x + "Y" + thisVelocityMap[i, j].y + "Density " + thisDensityMap[i, j]);
-                Debug.Log("Next: V:X" + nextVelocityMap[i, j].x + "Y" + nextVelocityMap[i, j].y + "Density " + nextDensityMap[i, j]);
-            }
-        }
     }
     // Update is called once per frame
     void Update()
