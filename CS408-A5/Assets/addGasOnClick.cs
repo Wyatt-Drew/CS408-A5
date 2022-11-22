@@ -15,9 +15,10 @@ public class addGasOnClick : MonoBehaviour
     {
         lastGasAdd = -5f;
     }
+    //Purpose: Allow the user to add gas by continually holding down the mouse button,
+    //but require gasCooldown time to pass before it adds more gas.
     void OnMouseOver()
     {
-       // Debug.Log("add" + lastGasAdd + "cooldown" + gasCooldown + "time" + )
         if (Input.GetMouseButton(0) == true && (Time.realtimeSinceStartup >= lastGasAdd + gasCooldown))
         {
             manager.incrementGasOnClick(x, y);

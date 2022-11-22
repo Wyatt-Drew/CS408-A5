@@ -26,17 +26,29 @@ public class tileManager : MonoBehaviour
     //Creative feature
     public float clickDensity = 1000f;
     public float clickSpeed = 10f;
+    private float originalClickDensity;
+    private float originalClickSpeed;
     public TMP_InputField speedInput;
     public TMP_InputField densityInput;
     private bool isPaused = false;
     [SerializeField]
     private TextMeshProUGUI pauseTxt;
-
+    //Creative feature
+    const int RED = 1;
+    const int TEAL = 2;
+    const int PURPLE = 3;
+    private int gasColor = RED;
+    //Creative feature
+    private bool isCredits = false;
+    public GameObject panel;
     void Start()
     {
         //Creative Feature (initializing text input fields)
         densityInput.text = clickDensity.ToString();
         speedInput.text = clickSpeed.ToString();
+        originalClickDensity = clickDensity;
+        originalClickSpeed = clickSpeed;
+        //****
 
         Application.targetFrameRate = 60;
         m_MainCamera = Camera.main;
@@ -119,11 +131,25 @@ public class tileManager : MonoBehaviour
     {
         return UnityEngine.Random.Range(minValue, maxValue);
     }
-    Color generateColor(float density)
+    Color generateColorRed(float density)
     {
         float R = density;
         float G = density * density * 0.05f;
         float B = density * density * density * 0.0001f;
+        return new Color(R, G, B, 1f);
+    }
+    Color generateColorTeal(float density)
+    {
+        float G = density;
+        float B = density * density * 0.05f;
+        float R = density * density * density * 0.0001f;
+        return new Color(R, G, B, 1f);
+    }
+    Color generateColorPurple(float density)
+    {
+        float B = density;
+        float R = density * density * 0.05f;
+        float G = density * density * density * 0.0001f;
         return new Color(R, G, B, 1f);
     }
 
@@ -256,13 +282,37 @@ public class tileManager : MonoBehaviour
     //Purpose: Update gas colors to current density
     void displayGas(float[,] thisDensityMap)
     {
-        for (int i = 0; i < columns; i++)
+        switch(gasColor)
         {
-            for (int j = 0; j < rows; j++)
-            {
-                tileArray[i, j].GetComponent<SpriteRenderer>().color = generateColor(thisDensityMap[i, j]);
-            }
+            case RED:
+                for (int i = 0; i < columns; i++)
+                {
+                    for (int j = 0; j < rows; j++)
+                    {
+                        tileArray[i, j].GetComponent<SpriteRenderer>().color = generateColorRed(thisDensityMap[i, j]);
+                    }
+                }
+                break;
+            case TEAL: //Creative feature
+                for (int i = 0; i < columns; i++)
+                {
+                    for (int j = 0; j < rows; j++)
+                    {
+                        tileArray[i, j].GetComponent<SpriteRenderer>().color = generateColorTeal(thisDensityMap[i, j]);
+                    }
+                }
+                break;
+            case PURPLE: //Creative feature
+                for (int i = 0; i < columns; i++)
+                {
+                    for (int j = 0; j < rows; j++)
+                    {
+                        tileArray[i, j].GetComponent<SpriteRenderer>().color = generateColorPurple(thisDensityMap[i, j]);
+                    }
+                }
+                break;
         }
+
     }
     //Debug function
     //Purpose: Verify total mass does not change (within rounding error of Unity with floats).
@@ -323,9 +373,8 @@ public class tileManager : MonoBehaviour
             densityMap2[i, j] += clickDensity;
             velocityMap2[i, j] = randomVector(-clickSpeed, clickSpeed);
         }
-        //Debug.Log("Density" + densityMap1[i, j] + "veloctiy" + velocityMap1[i, j].x + "Y" + velocityMap1[i, j].y);
     }
-    //Button Input
+    //Speed and density buttons
     public void increaseDensityButton()
     {
         clickDensity += 10f;
@@ -375,13 +424,16 @@ public class tileManager : MonoBehaviour
     //New game
     public void newGame()
     {
-        //resetMap(densityMap1, velocityMap1);
-        //resetMap(densityMap2, velocityMap2);
-        clickDensity = 1000f;
-        clickSpeed = 10f;
-        generateGas();
+        clickDensity = originalClickDensity;
+        clickSpeed = originalClickSpeed;
         speedInput.text = clickSpeed.ToString();
         densityInput.text = clickDensity.ToString();
+        generateGas();
+        gasColor = RED;
+        if (isPaused) //Unpause if paused
+        {
+            pause();
+        }
     }
     //Pause
     public void pause()
@@ -394,5 +446,16 @@ public class tileManager : MonoBehaviour
         {
             pauseTxt.text = "Pause";
         }
+    }
+    //Change color
+    public void changeColor(int color)
+    {
+        gasColor = color;
+    }
+    //Toggle credits
+    public void toggleCredits()
+    {
+        isCredits = !isCredits;
+        panel.SetActive(isCredits);
     }
 }
